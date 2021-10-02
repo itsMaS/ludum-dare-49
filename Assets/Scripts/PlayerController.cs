@@ -45,13 +45,11 @@ public class PlayerController : MonoBehaviour
     private void StartStroke()
     {
         strokeCouroutine = StartCoroutine(Stroke());
-        Debug.Log($"Start Stroke");
     }
     private void EndStroke()
     {
         if(strokeCouroutine != null)
         {
-            Debug.Log($"End Stroke");
             StopCoroutine(strokeCouroutine);
             strokeCouroutine = null;
         } 

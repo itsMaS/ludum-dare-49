@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteAlways, RequireComponent(typeof(LineRenderer))]
+[RequireComponent(typeof(LineRenderer))]
 public class RopeGulp : MonoBehaviour
 {
     LineRenderer lr;
@@ -18,8 +18,6 @@ public class RopeGulp : MonoBehaviour
     }
     private void Update()
     {
-        if (!Application.isPlaying) lr = GetComponent<LineRenderer>();
-
         AnimationCurve modifiedCurve = new AnimationCurve();
         foreach (var key in front.keys)
         {
