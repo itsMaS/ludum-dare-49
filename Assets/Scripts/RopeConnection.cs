@@ -17,7 +17,7 @@ public class RopeConnection : MonoBehaviour
     [SerializeField] float elasticity;
     [SerializeField] float breakOnLenght;
 
-    bool broken = false;
+    public bool broken = false;
 
     Rope rope;
     private void Awake()
@@ -51,10 +51,10 @@ public class RopeConnection : MonoBehaviour
             rope.GetLastPoint().MovePosition(visualConnection.position);
             
             float tension = rope.GetTension();
+            Vector3 rockPullVector = ((Vector3)rope.GetFirstPoint().position - visualConnection.position);
             if(tension > 1)
             {
                 rope.length += elasticity * Time.fixedDeltaTime;
-                Vector3 rockPullVector = ((Vector3)rope.GetFirstPoint().position - visualConnection.position);
                 connectedRigidbody.AddForce((tension - 1) * pullForce * rockPullVector);
 
                 if (rope.length > breakOnLenght)
@@ -62,18 +62,18 @@ public class RopeConnection : MonoBehaviour
                     Break();
                     return;
                 }
-                if(IKInfluence)
-                    IKInfluence.AddForce((tension - 1) * IKPullForce * rockPullVector);
             }
             if(tension > tensionNeededToBreak)
             {
                 Break();
                 return;
             }
+            if(IKInfluence)
+                IKInfluence.AddForce(tension * IKPullForce * rockPullVector);
         }
     }
 
-    private void Break()
+    public void Break()
     {
         broken = true;
         Rigidbody2D lastPoint = rope.GetLastPoint();

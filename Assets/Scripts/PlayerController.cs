@@ -5,6 +5,11 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
 public class PlayerController : MonoBehaviour
 {
+    [System.Serializable]
+    public enum PlayerState { Cinematic, Swim }
+
+    public PlayerState currentState = PlayerState.Cinematic;
+
     [SerializeField] float strokeForce;
     [SerializeField] float turningSensitivity = 10;
     [SerializeField] float swimThreshold = 1;
@@ -17,14 +22,46 @@ public class PlayerController : MonoBehaviour
 
     Vector2 target;
 
+    float startingGravity;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         an = GetComponent<Animator>();
     }
+    private void Start()
+    {
+        startingGravity = rb.gravityScale;
+    }
 
     private void Update()
     {
+        switch (currentState)
+        {
+            case PlayerState.Cinematic:
+                CinematicMovement();
+                break;
+            case PlayerState.Swim:
+                NormalMovement();
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void SetState(int state)
+    {
+        currentState = (PlayerState)state;
+    }
+
+    void CinematicMovement()
+    {
+        an.SetBool("Swimming", false);
+        rb.gravityScale = 0;
+    }
+    void NormalMovement()
+    {
+        rb.gravityScale = startingGravity;
         Vector2 pointerPos = cam.ScreenToWorldPoint(Input.mousePosition);
         Vector2 movementVector = target - (Vector2)transform.position;
 
@@ -39,8 +76,8 @@ public class PlayerController : MonoBehaviour
             target = transform.position;
         }
         an.SetBool("Swimming", movementVector.magnitude > swimThreshold);
-
     }
+
 
     private void StartStroke()
     {
