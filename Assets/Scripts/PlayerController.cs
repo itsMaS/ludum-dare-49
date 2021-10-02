@@ -6,8 +6,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] float strokeForce;
-    [SerializeField] float swimThreshold = 5;
     [SerializeField] float turningSensitivity = 10;
+    [SerializeField] float swimThreshold = 1;
 
     [SerializeField] Camera cam;
 
@@ -25,33 +25,36 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        Vector2 pointerPos = cam.ScreenToWorldPoint(Input.mousePosition);
         Vector2 movementVector = target - (Vector2)transform.position;
+
         if(Input.GetMouseButton(0))
         {
-            target = cam.ScreenToWorldPoint(Input.mousePosition);
+            target = pointerPos;
             transform.up = Vector3.Lerp(transform.up, movementVector, turningSensitivity * Time.deltaTime);
         }
         else
         {
+            transform.up = Vector3.Lerp(transform.up, (Vector3)pointerPos - transform.position, turningSensitivity*0.5f * Time.deltaTime);
             target = transform.position;
         }
         an.SetBool("Swimming", movementVector.magnitude > swimThreshold);
-
-        //if(movementVector.magnitude > swimThreshold)
-        //{
-
-        //}
 
     }
 
     private void StartStroke()
     {
         strokeCouroutine = StartCoroutine(Stroke());
+        Debug.Log($"Start Stroke");
     }
     private void EndStroke()
     {
-        if(strokeCouroutine != null) 
+        if(strokeCouroutine != null)
+        {
+            Debug.Log($"End Stroke");
             StopCoroutine(strokeCouroutine);
+            strokeCouroutine = null;
+        } 
     }
 
     IEnumerator Stroke()
