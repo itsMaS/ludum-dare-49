@@ -10,6 +10,7 @@ public class RopeGulp : MonoBehaviour
     [SerializeField] AnimationCurve front;
 
     [SerializeField] float waveSpeed = 1;
+    [SerializeField] bool forward = true;
 
     private void Awake()
     {
@@ -22,7 +23,15 @@ public class RopeGulp : MonoBehaviour
         AnimationCurve modifiedCurve = new AnimationCurve();
         foreach (var key in front.keys)
         {
-            Keyframe keyframe = new Keyframe(((Time.time*waveSpeed) % 1) + key.time, key.value);
+            Keyframe keyframe;
+            if (forward)
+            {
+                keyframe = new Keyframe(((Time.time*waveSpeed) % 1) + key.time, key.value);
+            }
+            else
+            {
+                keyframe = new Keyframe((1- ((Time.time * waveSpeed) % 1)) + key.time, key.value);
+            }
             modifiedCurve.AddKey(keyframe);
         }
         lr.widthCurve = modifiedCurve;

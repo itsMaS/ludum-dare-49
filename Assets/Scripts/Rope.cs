@@ -12,7 +12,6 @@ public class Rope : MonoBehaviour
     [SerializeField] float rigidity = 1;
     [SerializeField] float drag = 1;
     [SerializeField] int pointsPerSegment = 10;
-    [SerializeField] float length = 3;
 
     LineRenderer lr;
     
@@ -26,8 +25,14 @@ public class Rope : MonoBehaviour
     }
     private void Update()
     {
-        if (!Application.isPlaying) lr = GetComponent<LineRenderer>();
-        Simulate(false);
+        if (!Application.isPlaying)
+        {
+            lr = GetComponent<LineRenderer>();
+        }
+        else
+        {
+            Simulate(false);
+        }
     }
 
     private void Simulate(bool start)
@@ -63,5 +68,14 @@ public class Rope : MonoBehaviour
         {
             lr.SetPosition(segment * pointsPerSegment + i, Vector2.Lerp(p1,p2, (float)i/pointsPerSegment));
         }
+    }
+
+    public Rigidbody2D GetFirstPoint()
+    {
+        return Points[0];
+    }
+    public Rigidbody2D GetLastPoint()
+    {
+        return Points[Points.Count-1];
     }
 }
