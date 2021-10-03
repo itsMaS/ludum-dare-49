@@ -30,6 +30,8 @@ public class CursorControl : MonoBehaviour
             tween?.Kill();
             tween = CursorImage.DOFade(0, transitionDuration);
         }
+
+        Cursor.visible = false;
     }
 
     private void OnApplicationFocus(bool focus)

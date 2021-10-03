@@ -53535,7 +53535,7 @@ PrefabInstance:
     - target: {fileID: 486338346640598300, guid: d9c2297a2cfc7d447b03c3071b109d76, type: 3}
       propertyPath: spawnPoint
       value: 
-      objectReference: {fileID: 553830274}
+      objectReference: {fileID: 1942425064}
     - target: {fileID: 486338346640598300, guid: d9c2297a2cfc7d447b03c3071b109d76, type: 3}
       propertyPath: SpawnParticle
       value: 
