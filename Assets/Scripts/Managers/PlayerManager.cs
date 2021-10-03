@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Events;
+using Cinemachine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
 public class PlayerManager : MonoBehaviour
@@ -15,8 +16,10 @@ public class PlayerManager : MonoBehaviour
 
     [System.Serializable]
     public enum PlayerState { Cinematic, Swim, Dead }
+    public enum Death { Impaled, Robot, System }
 
     public PlayerState currentState = PlayerState.Cinematic;
+
 
     [SerializeField] CheckPoint spawnPoint;
     
@@ -32,6 +35,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] Camera cam;
     [SerializeField] AudioSource strokeSound;
     [SerializeField] List<Rigidbody2D> IKPoints;
+    [SerializeField] CinemachineVirtualCamera playersCamera;
 
     Coroutine strokeCouroutine;
     Rigidbody2D rb;
@@ -58,6 +62,7 @@ public class PlayerManager : MonoBehaviour
     {
         spawnPoint.Spawn(this);
         startingGravity = rb.gravityScale;
+        DOVirtual.DelayedCall(0.5f, () => playersCamera.enabled = true);
     }
 
     private void Update()
@@ -153,7 +158,6 @@ public class PlayerManager : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log($"Collison {charged} {collision.collider.attachedRigidbody}");
         IBreakable breakable = null;
         if(charged && (breakable = collision.gameObject.GetComponentInParent<IBreakable>()) != null)
         {
@@ -168,17 +172,35 @@ public class PlayerManager : MonoBehaviour
     }
     public void RespawnPlayer()
     {
+        IKPoints.ForEach(ik => ik.simulated = true);
+        rb.simulated = true;
         spawnPoint.Spawn(this);
         onRespawn.Invoke();
+        an.SetBool("Dead", false);
+        rb.velocity = Vector2.zero;
     }
 
     [ContextMenu("KIll player")]
-    public void KillPlayer()
+    public void KillPlayer(Death death)
     {
+        if (currentState == PlayerState.Dead) return;
+        TransitionStatesVisual(false);
+        Debug.Log($"Player died!");
         SetState(PlayerState.Dead);
         rb.gravityScale = startingGravity * 2;
+        switch(death)
+        {
+            case Death.Impaled:
+                rb.simulated = false;
+                break;
+            case Death.Robot:
+                IKPoints.ForEach(ik => ik.simulated = false);
+                break;
+        }
+
         onDeath?.Invoke();
         DOVirtual.DelayedCall(3, () => RespawnPlayer());
+        an.SetBool("Dead", true);
     }
     public void SetCheckpoint(CheckPoint checkpoint)
     {

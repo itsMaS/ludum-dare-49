@@ -18,6 +18,7 @@ public class RopeConnection : MonoBehaviour
     [SerializeField] float elasticity;
     [SerializeField] float breakOnLenght;
 
+    bool connected = false;
     public bool broken = false;
 
     Rope rope;
@@ -25,29 +26,36 @@ public class RopeConnection : MonoBehaviour
     {
         rope = GetComponent<Rope>();
     }
-    public void Connect(PlayerManager player, Vector2 point)
+    public void Connect(Rigidbody2D connection, Transform visualPoint)
     {
-
+        connected = true;
+        visualConnection = visualPoint;
+        connectedRigidbody = connection;
     }
     private void Start()
     {
-        rope.GetLastPoint().gravityScale = 0;
-        rope.GetLastPoint().position = visualConnection.position;
+        connected = connectedRigidbody && visualConnection;
+
+        if(connected)
+        {
+            rope.GetLastPoint().gravityScale = 0;
+            rope.GetLastPoint().position = visualConnection.position;
+        }
         broken = false;
     }
     private void Update()
     {
-#if UNITY_EDITOR
-        if(!Application.isPlaying)
-        {
-            if (!rope) rope.GetComponent<Rope>();
-            rope.GetLastPoint().transform.position = visualConnection.position;
-        }
-#endif
+//#if UNITY_EDITOR
+//        if(!Application.isPlaying && connected)
+//        {
+//            if (!rope) rope.GetComponent<Rope>();
+//            rope.GetLastPoint().transform.position = visualConnection.position;
+//        }
+//#endif
     }
     private void FixedUpdate()
     {
-        if(!broken)
+        if(connected && !broken)
         {
             rope.GetLastPoint().MovePosition(visualConnection.position);
             

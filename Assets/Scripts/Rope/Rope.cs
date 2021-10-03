@@ -30,8 +30,13 @@ public class Rope : MonoBehaviour
         Simulate();
     }
 
-    private void InitialSetup()
+    public void InitialSetup()
     {
+        for (int i = 1; i < Points.Count-1; i++)
+        {
+            Points[i].transform.position = Vector2.Lerp(Points[0].position, Points[Points.Count-1].position, (float)i / Points.Count);
+        }
+
         lr.positionCount = Points.Count - 1;
         for (int i = 1; i < Points.Count - 1; i++)
         {

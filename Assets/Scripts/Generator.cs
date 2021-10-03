@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
-
+using DG.Tweening;
 
 public class Generator : MonoBehaviour
 {
@@ -18,6 +18,8 @@ public class Generator : MonoBehaviour
     [SerializeField] List<Transform> RightRotors;
     [SerializeField] List<Transform> LeftRotors;
     [SerializeField] AudioSource generatorAudio;
+    [SerializeField] GameObject Tutorial;
+    [SerializeField] float roundStartDelay = 50;
 
     float generatorPowerNormalized = 1;
 
@@ -58,5 +60,10 @@ public class Generator : MonoBehaviour
     public void SetupGenerator()
     {
         gameObject.SetActive(true);
+        DOVirtual.DelayedCall(roundStartDelay, () =>
+        {
+            PlayerManager.Instance.SetState(PlayerManager.PlayerState.Swim);
+            Tutorial.SetActive(true);
+        });
     }
 }
