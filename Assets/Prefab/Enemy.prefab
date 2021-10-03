@@ -5527,7 +5527,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shootThreshold: 1
   cannonRotationSpeed: 10
-  shootCooldown: 10
+  shootCooldown: 5
   gradient: {fileID: 179343116572686213}
   rope: {fileID: 7108254415546261902}
   ropeSpeed: 100

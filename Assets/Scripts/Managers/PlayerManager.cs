@@ -36,6 +36,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] AudioSource strokeSound;
     [SerializeField] List<Rigidbody2D> IKPoints;
     [SerializeField] CinemachineVirtualCamera playersCamera;
+    [SerializeField] ParticleSystem SpawnParticle;
 
     Coroutine strokeCouroutine;
     Rigidbody2D rb;
@@ -178,6 +179,7 @@ public class PlayerManager : MonoBehaviour
         onRespawn.Invoke();
         an.SetBool("Dead", false);
         rb.velocity = Vector2.zero;
+        SpawnParticle.Play();
     }
 
     [ContextMenu("KIll player")]

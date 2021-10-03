@@ -15,14 +15,16 @@ public class GameTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (triggeredOnce && triggered) return;
-        OnExit.Invoke();
+        Debug.Log($"TRIGGER ENTER {gameObject} {triggeredOnce} triggered: {triggered} Col: {collision.tag}");
+        if (!collision.CompareTag("Player") || (triggeredOnce && triggered)) return;
+        Debug.Log($"TRIGGERING");
+        OnEnter.Invoke();
         Enter();
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (triggeredOnce && triggered) return;
-        OnEnter.Invoke();
+        if (!collision.CompareTag("Player") || triggeredOnce && triggered) return;
+        OnExit.Invoke();
         Exit();
     }
 

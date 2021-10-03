@@ -19,6 +19,7 @@ public class Catcher : MonoBehaviour, IBreakable
     float rotationModifier = 0;
 
     float shootingAccumulation = 0;
+    float coolDownAmount;
 
     Rigidbody2D player = null;
 
@@ -30,6 +31,8 @@ public class Catcher : MonoBehaviour, IBreakable
         rope.InitialSetup();
 
         cannonBase.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
+
+        PlayerManager.Instance.onDeath.AddListener(() => player = null);
     }
     private void Update()
     {
@@ -39,6 +42,8 @@ public class Catcher : MonoBehaviour, IBreakable
             cannonBase.right = cannonBase.position - player.transform.position;
             gradient.enabled = false;
         }
+
+        coolDownAmount -= Time.deltaTime;
     }
 
     private void FixedUpdate()
@@ -61,7 +66,7 @@ public class Catcher : MonoBehaviour, IBreakable
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(collision.CompareTag("Player") && PlayerManager.Instance.currentState != PlayerManager.PlayerState.Dead)
+        if(coolDownAmount <= 0 && collision.CompareTag("Player") && PlayerManager.Instance.currentState != PlayerManager.PlayerState.Dead)
         {
             gradient.enabled = Time.frameCount % 2 == 0;
             rotationModifier = 0;
@@ -104,6 +109,7 @@ public class Catcher : MonoBehaviour, IBreakable
 
     private void DestroyPlayer()
     {
+        coolDownAmount = shootCooldown;
         player.AddForce((player.position - (Vector2)transform.position).normalized*playerEjectForce, ForceMode2D.Impulse);
         //PlayerManager.Instance.KillPlayer(PlayerManager.Death.System);
         player = null;
