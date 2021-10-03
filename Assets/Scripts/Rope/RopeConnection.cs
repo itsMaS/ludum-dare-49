@@ -8,6 +8,7 @@ public class RopeConnection : MonoBehaviour
     [SerializeField] Rigidbody2D connectedRigidbody;
     [SerializeField] Transform visualConnection;
     [SerializeField] Rigidbody2D IKInfluence;
+    [SerializeField] AudioSource BreakSound;
 
     [SerializeField] float pullForce;
     [SerializeField] float IKPullForce;
@@ -24,7 +25,7 @@ public class RopeConnection : MonoBehaviour
     {
         rope = GetComponent<Rope>();
     }
-    public void Connect(PlayerController player, Vector2 point)
+    public void Connect(PlayerManager player, Vector2 point)
     {
 
     }
@@ -75,6 +76,7 @@ public class RopeConnection : MonoBehaviour
 
     public void Break()
     {
+        BreakSound.Play();
         broken = true;
         Rigidbody2D lastPoint = rope.GetLastPoint();
         lastPoint.gravityScale = 1;

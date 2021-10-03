@@ -15,6 +15,11 @@ public class RagdollPhysicsPoint : MonoBehaviour
     }
     private void Start()
     {
+        ResetPosition();
+        PlayerManager.Instance.onRespawn.AddListener(() => ResetPosition());
+    }
+    private void ResetPosition()
+    {
         transform.position = target.position;
     }
     private void Update()

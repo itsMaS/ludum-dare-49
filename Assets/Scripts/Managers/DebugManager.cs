@@ -17,7 +17,7 @@ public class DebugManager : MonoBehaviour
         }
         else if(Input.GetKeyDown(KeyCode.F3))
         {
-            TimeControl(false);
+            TimeControl(true);
         }
     }
 
@@ -30,6 +30,11 @@ public class DebugManager : MonoBehaviour
     }
     private void TimeControl(bool forward)
     {
-        Time.timeScale = (Time.timeScale + 3 * (forward ? 1 : -1)) % 15;
+        if (!forward)
+        {
+            Time.timeScale = 1;
+            return;
+        } 
+        Time.timeScale += 3;
     }
 }
